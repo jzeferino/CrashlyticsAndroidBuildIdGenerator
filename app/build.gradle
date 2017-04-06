@@ -1,0 +1,91 @@
+import org.w3c.dom.Document
+import org.w3c.dom.Node
+
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId packagename as String
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [fabricApiKey: fabricApiKey as String]
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    testCompile 'junit:junit:4.12'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
+        transitive = true;
+    }
+}
+
+
+def String getCurrentEnvironment() {
+
+    for (int i = 0; i < project.tasks.size(); i++) {
+        String taskName = project.tasks[i].getName()
+        if (taskName.contains("assemble")) {
+            Matcher matcher = Pattern.compile("assemble(Release|Debug)").matcher(taskName)
+            if (matcher.find()) {
+                return matcher.group(1).toLowerCase();
+            }
+        }
+    }
+    return null
+}
+
+task finalize << {
+
+    DocumentBuilderFactory xmlFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder docBuilder = xmlFactory.newDocumentBuilder();
+    String fileLocation = "app/build/generated/fabric/res/${getCurrentEnvironment()}/values/com_crashlytics_build_id.xml"
+    println("com_crashlytics_build_id.xml :" + fileLocation)
+    Document xmlDoc = docBuilder.parse(fileLocation);
+
+    String uuid = ((Node) xmlDoc.getElementsByTagName("string").item(0)).firstChild.getTextContent();
+    println("CrashLytics UUID" + uuid)
+
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter((outputFile as String), true)));
+    out.println((packagename as String) + "\t" + uuid);
+    out.close();
+
+}
+
+build.finalizedBy(finalize)
