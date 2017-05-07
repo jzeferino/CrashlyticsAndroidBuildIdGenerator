@@ -10,7 +10,7 @@
 # How to use
 1. Clone, or download the source from this repository.
 2. Edit the file `generate_ids.sh`
-3. Add your `fabricApiKey` and your package name(s).
+3. Add your `fabricApiKey` and your package(s) name.
 
 Example:
 
@@ -40,8 +40,8 @@ com.test.build.dev	e0f775bf-0647-496d-b0dd-728h67d158c9
 
 To configure `crashlytics` in you Xamarin android Project you must:
 
-1. Install the nuget package from [here](https://www.nuget.org/packages/Crashlytics.Droid.Binding/).
-2. Initialize Fabric with `crashlytics` in your `Application` class:
+1. Install the Crashlytics nuget package from [here](https://www.nuget.org/packages/Crashlytics.Droid.Binding/).
+2. Initialize Fabric with `crashlytics` in your `Application` or `MainActivity` class:
 
 ```c#
 using IO.Fabric.Sdk.Android.Services.Common;
@@ -68,4 +68,5 @@ File sample:
 ```
 
 Run the application and it should get registed in crashlytics and ready to report crashes.
-**NOTE**: The generated UUID don't need to be re-generated for the same package name. 
+
+**NOTE**: The generated UUID don't need to be re-generated for the same package name everytime you build the package. 
