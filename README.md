@@ -70,3 +70,7 @@ File sample:
 Run the application and it should get registed in crashlytics and ready to report crashes.
 
 **NOTE**: The generated UUID don't need to be re-generated for the same package name everytime you build the package. 
+
+
+### License
+[MIT Licence](LICENSE) 
