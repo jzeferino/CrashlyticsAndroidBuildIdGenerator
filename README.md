@@ -4,12 +4,12 @@
 * This is useful for generating UUIDs for Xamarin.Android application without having to create and install a Android application and deal with Fabric.
 
 # Requirements
-1. Android Studio installed
-2. OSX or Linux machine
+1. Android Studio installed.
+2. OSX or Linux machine.
 
 # How to use
 1. Clone, or download the source from this repository.
-2. Edit the file `generate_ids.sh`
+2. Edit the file `generate_ids.sh`.
 3. Add your `fabricApiKey` and your package(s) name.
 
 Example:
